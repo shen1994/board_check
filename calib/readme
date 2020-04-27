@@ -1,0 +1,1 @@
+python capture.py rtsp://admin:admin123@192.168.101.205 1080 1920 11 8 data/ png
