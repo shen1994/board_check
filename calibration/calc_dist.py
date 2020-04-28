@@ -7,9 +7,9 @@ criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
 if __name__ == '__main__':
 
-	image = cv2.imread("../data/image17.png", 1)
+	image = cv2.imread("../test/image0.png", 1)
 
-	K, D = load_coefficients("./cam_calib.yml")
+	K, D = load_coefficients("../test/cam_calib.yml")
 	K = np.array(K, dtype=np.float64).reshape((3, 3))
 	D = np.array(D, dtype=np.float64).reshape((1, 5))
 
@@ -28,6 +28,7 @@ if __name__ == '__main__':
 		objp = np.zeros((11 * 8, 3), np.float32)
 		objp[:, :2] = np.mgrid[:11, :8].T.reshape(-1, 2)
 		objp = objp * 0.035
+		print(objp)
 
 		corners2 = corners2.reshape((corners2.shape[0], corners2.shape[2]))
 		corners3 = np.zeros(shape=(corners2.shape[0], 3), dtype=np.float32)
@@ -37,7 +38,7 @@ if __name__ == '__main__':
 		# R, t = transform_3D(objp, corners3)
 		found, r, t = cv2.solvePnP(objp, corners2, K, D)
 		R = cv2.Rodrigues(r)[0]
-		#t = cv2.Rodrigues(t)[0]
+
 		R_inv = np.linalg.inv(R)
 
 		# camera cords = R_inv * (-t)
@@ -58,13 +59,18 @@ if __name__ == '__main__':
 		#cv2.circle(image_rectify, tuple(circle_center), 5, [0, 0, 255], 2)
 
 		# Pw = R_inv * (Pc - t)
-		# center_world = np.dot(R_inv, circle_center - t)
+		#center_world = np.dot(R_inv, circle_center - t)
 
 		# distance between cords
 		center_world = np.zeros(shape=(3,), dtype=np.float32)
 		dist = np.linalg.norm(camera_cords - center_world)
+		print("distance: %f\n"%(camera_cords[2])) 
 
-		print("distance: %f\n"%(dist)) 
+		rz = z_theta * 3.14 / 180.0
+		out_x = np.cos(rz) * t[0] - np.sin(rz) * t[1]
+		out_y = np.sin(rz) * t[0] + np.cos(rz) * t[1]
+		print("distance1: %f\n", np.sqrt(out_x * out_x + out_y * out_y))
+		
 
 	cv2.imshow("image", image_rectify)
 	cv2.waitKey(1000)

@@ -23,12 +23,14 @@ include_directories(capture common/ capture/)
 add_executable(capture capture/main.cpp 
 common/ffmpeg.cpp common/callback.cpp capture/detect_corners.cpp)
 
+target_include_directories(capture PRIVATE ${AVCODEC_INCLUDE_DIR} ${AVFORMAT_INCLUDE_DIR} ${AVUTIL_INCLUDE_DIR} ${SWSCALE_INCLUDE_DIR})
 target_link_libraries(capture ${OpenCV_LIBS} -pthread)
 target_link_libraries(capture ${AVCODEC_LIBRARY} ${AVFORMAT_LIBRARY} ${AVUTIL_LIBRARY} ${SWSCALE_LIBRARY})
 
 include_directories(chess_check common/ src/ thirdparty/inih/ /usr/include/freetype2/)
 add_executable(chess_check src/main.cpp 
-thirdparty/inih/ini.c src/config.cpp common/ffmpeg.cpp common/callback.cpp src/detect_corners.cpp src/line_linear.cpp src/draw_ui.cpp)
+thirdparty/inih/ini.c common/ffmpeg.cpp common/callback.cpp 
+src/config.cpp src/detect_corners.cpp src/line_linear.cpp src/draw_ui.cpp)
 
 target_include_directories(chess_check PRIVATE ${AVCODEC_INCLUDE_DIR} ${AVFORMAT_INCLUDE_DIR} ${AVUTIL_INCLUDE_DIR} ${SWSCALE_INCLUDE_DIR})
 target_link_libraries(chess_check ${OpenCV_LIBS} -pthread -lfreetype)

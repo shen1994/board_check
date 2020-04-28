@@ -36,13 +36,10 @@ public:
 	bool m_fontUnderline;
 	float m_fontDiaphaneity;
 
-	wchar_t *turn_left;
-	wchar_t *turn_right;
-	wchar_t *turn_top;
-	wchar_t *turn_bot;
-	wchar_t *turn_min;
-	wchar_t *turn_max;
-	wchar_t *turn_change;
+	wchar_t *distance_char;
+	wchar_t *raw_char;
+	wchar_t *pitch_char;
+	wchar_t *yoll_char;
 };
 
 #endif

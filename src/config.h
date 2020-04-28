@@ -28,6 +28,8 @@ typedef struct{
     std::string rtsp_addr;
     int cows;
     int rows;
+    double square_size;
+    std::string calib_file;
     double pixels;
     double shift_x;
     double shift_y;

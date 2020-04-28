@@ -12,33 +12,21 @@ UI::UI()
 	setlocale(LC_ALL, "");
 
 	// init some chinese characters
-	const wchar_t turn_left_char[] = {L'\u5F80', L'\u5DE6', L'\u6765', L'\u70B9'};
-	turn_left = (wchar_t*)malloc(4 * sizeof(wchar_t));
-	memcpy(turn_left, turn_left_char, 4 * sizeof(wchar_t));
+	const wchar_t distance_char_tmp[] = {L'\u8DDD', L'\u79BB'};
+	distance_char = (wchar_t*)malloc(2 * sizeof(wchar_t));
+	memcpy(distance_char, distance_char_tmp, 2 * sizeof(wchar_t));
 
-	const wchar_t turn_right_char[] = {L'\u5F80', L'\u53F3', L'\u6765', L'\u70B9'};
-	turn_right = (wchar_t*)malloc(4 * sizeof(wchar_t));
-	memcpy(turn_right, turn_right_char, 4 * sizeof(wchar_t));
+	const wchar_t raw_char_tmp[] = {L'\u524D', L'\u540E'};
+	raw_char = (wchar_t*)malloc(2 * sizeof(wchar_t));
+	memcpy(raw_char, raw_char_tmp, 2 * sizeof(wchar_t));
 
-	const wchar_t turn_top_char[] = {L'\u5F80', L'\u4E0A', L'\u6765', L'\u70B9'};
-	turn_top = (wchar_t*)malloc(4 * sizeof(wchar_t));
-	memcpy(turn_top, turn_top_char, 4 * sizeof(wchar_t));
+	const wchar_t pitch_char_tmp[] = {L'\u5DE6', L'\u53F3'};
+	pitch_char = (wchar_t*)malloc(2 * sizeof(wchar_t));
+	memcpy(pitch_char, pitch_char_tmp, 2 * sizeof(wchar_t));
 
-	const wchar_t turn_bot_char[] = {L'\u5F80', L'\u4E0B', L'\u6765', L'\u70B9'};
-	turn_bot = (wchar_t*)malloc(4 * sizeof(wchar_t));
-	memcpy(turn_bot, turn_bot_char, 4 * sizeof(wchar_t));
-
-	const wchar_t turn_max_char[] = {L'\u653E', L'\u5927'};
-	turn_max = (wchar_t*)malloc(2 * sizeof(wchar_t));
-	memcpy(turn_max, turn_max_char, 2 * sizeof(wchar_t));
-
-	const wchar_t turn_min_char[] = {L'\u7F29', L'\u5C0F'};
-	turn_min = (wchar_t*)malloc(2 * sizeof(wchar_t));
-	memcpy(turn_min, turn_min_char, 2 * sizeof(wchar_t));
-
-	const wchar_t turn_change_char[] = {L'\u7578', L'\u53D8', L'\u6307', L'\u6807'};
-	turn_change = (wchar_t*)malloc(4 * sizeof(wchar_t));
-	memcpy(turn_change, turn_change_char, 4 * sizeof(wchar_t));
+	const wchar_t yoll_char_tmp[] = {L'\u4E0A', L'\u4E0B'};
+	yoll_char = (wchar_t*)malloc(2 * sizeof(wchar_t));
+	memcpy(yoll_char, yoll_char_tmp, 2 * sizeof(wchar_t));
 }
 
 UI::~UI()
@@ -46,40 +34,25 @@ UI::~UI()
 	FT_Done_Face(m_face);
 	FT_Done_FreeType(m_library);
 
-	if(turn_left != nullptr)
+	if(distance_char != nullptr)
 	{
-		free(turn_left);
-		turn_left = nullptr;
+		free(distance_char);
+		distance_char = nullptr;
 	}
-	if(turn_right != nullptr)
+	if(raw_char != nullptr)
 	{
-		free(turn_right);
-		turn_right = nullptr;
+		free(raw_char);
+		raw_char = nullptr;
 	}
-	if(turn_top != nullptr)
+	if(pitch_char != nullptr)
 	{
-		free(turn_top);
-		turn_top = nullptr;
+		free(pitch_char);
+		pitch_char = nullptr;
 	}
-	if(turn_bot != nullptr)
+	if(yoll_char != nullptr)
 	{
-		free(turn_bot);
-		turn_bot = nullptr;
-	}
-	if(turn_min != nullptr)
-	{
-		free(turn_min);
-		turn_min = nullptr;
-	}
-	if(turn_max != nullptr)
-	{
-		free(turn_max);
-		turn_max = nullptr;
-	}
-	if(turn_change != nullptr)
-	{
-		free(turn_change);
-		turn_change = nullptr;
+		free(yoll_char);
+		yoll_char = nullptr;
 	}
 }
 
@@ -157,10 +130,10 @@ void UI::ui_draw_source(cv::Mat &image, const std::vector<cv::Point2f> &data, cv
     cv::circle(image, center_point, 0, cv::Scalar(255, 0, 0), 5, 8, 0);
 
     // draw rect
-    cv::line(image, pts[0], pts[1], cv::Scalar(255, 0, 0), 2, 8, 0); 
-    cv::line(image, pts[2], pts[3], cv::Scalar(255, 0, 0), 2, 8, 0);
-    cv::line(image, pts[0], pts[2], cv::Scalar(255, 0, 0), 2, 8, 0);
-    cv::line(image, pts[1], pts[3], cv::Scalar(255, 0, 0), 2, 8, 0); 
+    cv::line(image, pts[0], pts[1], cv::Scalar(255, 0, 0), 10, 8, 0); 
+    cv::line(image, pts[2], pts[3], cv::Scalar(255, 0, 0), 10, 8, 0);
+    cv::line(image, pts[0], pts[2], cv::Scalar(255, 0, 0), 10, 8, 0);
+    cv::line(image, pts[1], pts[3], cv::Scalar(255, 0, 0), 10, 8, 0); 
 
     // draw table lines
     cv::Point2f top_e((pts[1].x - pts[0].x) / board_cows, (pts[1].y - pts[1].y) / board_rows);
@@ -174,7 +147,7 @@ void UI::ui_draw_source(cv::Mat &image, const std::vector<cv::Point2f> &data, cv
     {
      	pt_start = cv::Point2f(data[board_cows * (i + 1)].x, data[board_cows * (i + 1)].y);
     	pt_end = cv::Point2f(data[board_cows * (i + 1) + board_cows - 1].x, data[board_cows * (i + 1) + board_cows - 1].y);
-    	cv::line(image, pt_start, pt_end, cv::Scalar(255, 0, 0), 2, 8, 0);    	
+    	cv::line(image, pt_start, pt_end, cv::Scalar(255, 0, 0), 10, 8, 0);    	
     }
 }
 
@@ -185,48 +158,23 @@ void UI::ui_draw_text(cv::Mat &image, ParamsType &params)
 {
 	int align_top = 20;
 	int table_width = 200, table_height = 50;
-	int char_left = 40, char_top = 38;
+	int char_left = 80, char_top = 38;
 	cv::Point pt_start(0, 0);
 
 	cv::Scalar font_size{ 30, 0.5, 0.1, 0 };
 	UI::ui_set_font(nullptr, &font_size, nullptr, 0);
 
-	if(params.left_right_dir)
-	{
-		pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + char_left, align_top + char_top);
-		UI::ui_put_text(image, turn_left, pt_start, cv::Scalar(0, 0, 255));		
-	}
-	else
-	{
-		pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + char_left, align_top + char_top);
-		UI::ui_put_text(image, turn_right, pt_start, cv::Scalar(0, 0, 255));		
-	}
+	pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + char_left, align_top + char_top);
+	UI::ui_put_text(image, distance_char, pt_start, cv::Scalar(0, 0, 255));		
 
-	if(params.top_bot_dir)
-	{
-		pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + char_left, align_top + table_height + char_top);
-		UI::ui_put_text(image, turn_top, pt_start, cv::Scalar(0, 0, 255));	
-	}
-	else
-	{
-		pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + char_left, align_top + table_height + char_top);
-		UI::ui_put_text(image, turn_bot, pt_start, cv::Scalar(0, 0, 255));		
-	}
+	pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + char_left, align_top + table_height + char_top);
+	UI::ui_put_text(image, raw_char, pt_start, cv::Scalar(0, 0, 255));	
 
-	if(params.areas_dir)
-	{
-		pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + 55, align_top + table_height * 2 + char_top);
-		UI::ui_put_text(image, turn_min, pt_start, cv::Scalar(0, 0, 255));
-	}
-	else
-	{
-		pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + 55, align_top + table_height * 2 + char_top);
-		UI::ui_put_text(image, turn_max, pt_start, cv::Scalar(0, 0, 255));		
-	}
-
+	pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + char_left, align_top + table_height * 2 + char_top);
+	UI::ui_put_text(image, pitch_char, pt_start, cv::Scalar(0, 0, 255));
 
 	pt_start = cv::Point((int)(image.cols / 2.0 - table_width) + char_left, align_top + table_height * 3 + char_top);
-	UI::ui_put_text(image, turn_change, pt_start, cv::Scalar(0, 0, 255));
+	UI::ui_put_text(image, yoll_char, pt_start, cv::Scalar(0, 0, 255));
 }
 
 /**
@@ -236,27 +184,27 @@ void UI::ui_draw_params(cv::Mat &image, ParamsType &params)
 {
 	int align_top = 20;
 	int table_width = 200, table_height = 50;
-	int char_left = 10, char_top = 38;
+	int char_left = 30, char_top = 38;
 	cv::Point start_pt(0, 0);
 	std::string text, sub_text;
 
 	start_pt = cv::Point((int)(image.cols / 2.0) + char_left, align_top + char_top);
-	text = std::to_string((int)(params.left_right_value * 1000) / 1000.);
+	text = std::to_string((int)(params.distance * 1000) / 1000.);
 	sub_text = text.substr(0, text.length() - 3);
 	cv::putText(image, sub_text, start_pt, cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 0, 255), 1, 8, 0);
 
 	start_pt = cv::Point((int)(image.cols / 2.0) + char_left, align_top + table_height + char_top);
-	text = std::to_string((int)(params.top_bot_value * 1000) / 1000.);
+	text = std::to_string((int)(params.raw_angle * 1000) / 1000.);
 	sub_text = text.substr(0, text.length() - 3);
 	cv::putText(image, sub_text, start_pt, cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 0, 255), 1, 8, 0);
 
 	start_pt = cv::Point((int)(image.cols / 2.0) + char_left, align_top + table_height * 2 + char_top);
-	text = std::to_string((int)(params.areas_error * 1000));
+	text = std::to_string((int)(params.pitch_angle * 1000) / 1000.);
 	sub_text = text.substr(0, text.length() - 3);
 	cv::putText(image, sub_text, start_pt, cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 0, 255), 1, 8, 0);
 
 	start_pt = cv::Point((int)(image.cols / 2.0) + char_left, align_top + table_height * 3 + char_top);
-	text = std::to_string((int)(params.board_angle * 1000) / 1000.);
+	text = std::to_string((int)(params.yoll_angle * 1000) / 1000.);
 	sub_text = text.substr(0, text.length() - 3);
 	cv::putText(image, sub_text, start_pt, cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 0, 255), 1, 8, 0);	
 }
@@ -288,7 +236,7 @@ void UI::ui_put_wchar(cv::Mat &image, wchar_t wc, cv::Point &pos, cv::Scalar col
  
 	for (int i = 0; i < rows; ++i) {
 		for(int j = 0; j < cols; ++j) {
-			int off  = i * slot->bitmap.pitch + j/8;
+			int off  = i * slot->bitmap.pitch + j / 8;
 			
 			if (slot->bitmap.buffer[off] & (0xC0 >> (j%8))) {
 				int r = pos.y - (rows-1-i);

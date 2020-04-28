@@ -13,6 +13,11 @@ typedef struct{
     double areas;
     double areas_error;
     bool areas_dir;
+
+    double distance;
+    double raw_angle;
+    double pitch_angle;
+    double yoll_angle;
 }ParamsType;
 
 #endif

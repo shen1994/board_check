@@ -32,6 +32,10 @@ int Config::IniHandler(void *user, const char *section, const char *name, const 
 		    handle_params->cows = atoi(value);
 		else if(strcmp(name, "ROWS") == 0)
 			handle_params->rows = atoi(value);
+        else if(strcmp(name, "SQUARE_SIZE") == 0)
+            handle_params->square_size = (double)atof(value);
+        else if (strcmp(name, "CALIB_FILE") == 0)
+            handle_params->calib_file = value;
 		else if(strcmp(name, "PIXELS") == 0)
 		    handle_params->pixels = (double)atof(value);
 		else if(strcmp(name, "SHIFT_X") == 0)
