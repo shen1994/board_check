@@ -1,0 +1,22 @@
+1. capture images (50 images)
+python capture.py stereocam1 540 1920 L data/data0401/ png
+
+2. calib stereo each, it's better if error is less 0.2
+python single_calib.py --image_dir data/data0401/ --image_format png --prefix left --square_size 0.105 --width 8 --height 6 --save_file cam_left.yml
+
+python single_calib.py --image_dir data/data0401/ --image_format png --prefix right --square_size 0.105 --width 8 --height 6 --save_file cam_right.yml
+
+#note: if you want to limit more, please run it
+python single_calib_filter.py --image_dir data/data0401/ --image_format png --prefix left --square_size 0.105 --width 8 --height 6 --save_file cam_left.yml
+
+python single_calib_filter.py --image_dir data/data0401/ --image_format png --prefix right --square_size 0.105 --width 8 --height 6 --save_file cam_right.yml
+
+3. generate calib file (error is less than 0.3)
+python stereo_calib.py --left_file cam_left.yml --right_file cam_right.yml --left_prefix left --right_prefix right --left_dir all/ --right_dir all/ --image_format png --square_size 0.105 --save_file cam_stereo.yml --width 8 --height 6
+
+4. stereo depth verify
+python stereo_depth.py --calibration_file cam_stereo.yml --left_dir data/data0401/ --right_dir data/data0401/ --left_prefix left --right_prefix right --image_format png --height_top 20 --height_bot 520 --width_left 30 --width_right 930
+
+5. get undistorted image if you want
+python undistort_image.py --calibration_file cam_stereo.yml --left_dir data/data0401/ --right_dir data/data0401/ --left_prefix left --right_prefix right --image_format png --height_top 20 --height_bot 520 --width_left 30 --width_right 930 --left_save data/data0401_save/ --right_save data/data0401_save/
+

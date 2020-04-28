@@ -61,33 +61,33 @@ int main( )
             found_corners = detect_obj.core_detect(camera_callback.camera_param.image, corners);
 
             // draw default ui
-            ui_obj.ui_draw_target(camera_callback.camera_param.image, user_rect, 
-                        tar_center_point, board_cows - 1, board_rows - 1);
-            ui_obj.ui_draw_default(camera_callback.camera_param.image);
+            //ui_obj.ui_draw_target(camera_callback.camera_param.image, user_rect, 
+            //            tar_center_point, board_cows - 1, board_rows - 1);
+            //ui_obj.ui_draw_default(camera_callback.camera_param.image);
 
             if(found_corners)
             {
                 // calculate angles
-                linear_obj.tell_angle_to_rotate(corners, &device_params.board_angle);
+                //linear_obj.tell_angle_to_rotate(corners, &device_params.board_angle);
 
                 // calculate center points
-                linear_obj.tell_center_point(corners, device_params.center_point);
+                //linear_obj.tell_center_point(corners, device_params.center_point);
 
                 // tell top and bot, left and right direction
-                linear_obj.tell_location_error(device_params.center_point, tar_center_point, 
-                            &device_params.top_bot_value, &device_params.top_bot_dir, 
-                            &device_params.left_right_value, &device_params.left_right_dir);
+                //linear_obj.tell_location_error(device_params.center_point, tar_center_point, 
+                //            &device_params.top_bot_value, &device_params.top_bot_dir, 
+                //            &device_params.left_right_value, &device_params.left_right_dir);
 
                 // calculate areas
-                device_params.areas = linear_obj.tell_areas(corners);
-                linear_obj.tell_areas_error(device_params.areas, tar_areas, 
-                            &device_params.areas_error, &device_params.areas_dir);
+                //device_params.areas = linear_obj.tell_areas(corners);
+                //linear_obj.tell_areas_error(device_params.areas, tar_areas, 
+                //            &device_params.areas_error, &device_params.areas_dir);
 
                 // calculate scores --- > toDo
 
                 // draw related ui
-                ui_obj.ui_draw_text(camera_callback.camera_param.image, device_params);
-                ui_obj.ui_draw_params(camera_callback.camera_param.image, device_params);
+                //ui_obj.ui_draw_text(camera_callback.camera_param.image, device_params);
+                //ui_obj.ui_draw_params(camera_callback.camera_param.image, device_params);
                 ui_obj.ui_draw_source(camera_callback.camera_param.image, corners, 
                             device_params.center_point, board_cows - 1, board_rows - 1);
             }
