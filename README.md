@@ -1,18 +1,24 @@
 # board_check
 single camera calibration and application
 
+## add dependecies for software
+opencv3.4.5
+
 ## if you want to use single camera calibration, please run bellow:
 ./capture rtsp://admin:admin123@192.168.101.205 11 8 data/ 1080 1920
 
 ## if you want to calibration single camera, please run bellow:
-这个文件夹已经编译过了，是opencv的范例，可以直接用。仅可以标定一个摄像头数据。
-步奏如下：
-1、VID5.xml里面把棋盘格图片路径输进去，用于标定的棋盘格图片要平整，角度变化大且全面，棋盘格最好占据画面大部分。
-2、in_VID5.xml，把BoardSize_Width和BoardSize_Height按照棋盘格图片输进去。Square_Size是指每个格子的实际尺寸，用尺子量。单位毫米
-3、好了，如果是window系统，可以直接跑camera_calibration.cpp。在ubuntu里面，
-cmake .
-make
-python use_cali.py 
-会得到out_camera_data.xml参数文件，也就是包含Camera_Matrix和Distortion_Coefficients
-4、完成了。接下来可以用rectify_with_CamMatri_Dis.py来为这个摄像头拍到的图片去畸变拉。
+### run single_calib to get K, D, R-vector, V-vector
+python3 single_calib.py --image_dir data/ --image_format png --prefix left --square_size 0.035--width 8 --height 6 --save_file cam_calib.yml
+### run rectify to get undistorted image
+python3 rectify.py
+### run test_vecs to show world axis
+python3 test_vecs.py
+### run calc_dist to get distance and pose of calibration board
+python3 calc_dist.py
 
+## if you want use camera to show distance in realtime, please run bellow:
+mkdir build
+cd build && cmake .. && make
+cp ../config.ini ./
+./chess_check
