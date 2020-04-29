@@ -18,7 +18,7 @@ python3 test_vecs.py
 python3 calc_dist.py
 
 ## if you want use camera to show distance in realtime, please run bellow:
-mkdir build 
-cd build && cmake .. && make 
-cp ../config.ini ./ 
+mkdir build &&
+cd build && cmake .. && make &&
+cp ../config.ini ./ &&
 ./chess_check 
