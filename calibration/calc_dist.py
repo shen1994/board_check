@@ -5,9 +5,31 @@ from calib_store import load_coefficients
 
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
+def points2Worlds(image_pts, Mmatrix, Rmatrix, Tmatrix):
+	Mmatrix = np.linalg.inv(Mmatrix)
+	Rmatrix = np.linalg.inv(Rmatrix)
+	T = np.dot(Rmatrix.T, np.linalg.inv(Mmatrix))
+	B_tmp = np.dot(Rmatrix.T, Tmatrix)
+	B = B_tmp[:2, 0]
+	RHS3 = B_tmp[2, 0]
+	tz = Tmatrix[2]
+
+	abc_mat = np.dot(T, image_pts)
+	a = abc_mat[0]
+	b = abc_mat[1]
+	c = abc_mat[2]
+	
+	solve_mat = np.array([[a * R[2, 0] - 1, a * R[2, 1]], [b * R[2, 0], b * R[2, 1] - 1]], dtype=np.float32)
+	RHS = B - np.array([a, b], dtype=np.float32) * tz
+
+	solution = np.dot(np.linalg.inv(solve_mat), RHS)
+
+	return solution
+
+
 if __name__ == '__main__':
 
-	image = cv2.imread("../test/image0.png", 1)
+	image = cv2.imread("../test/image24.png", 1)
 
 	K, D = load_coefficients("../test/cam_calib.yml")
 	K = np.array(K, dtype=np.float64).reshape((3, 3))
@@ -28,7 +50,6 @@ if __name__ == '__main__':
 		objp = np.zeros((11 * 8, 3), np.float32)
 		objp[:, :2] = np.mgrid[:11, :8].T.reshape(-1, 2)
 		objp = objp * 0.035
-		print(objp)
 
 		corners2 = corners2.reshape((corners2.shape[0], corners2.shape[2]))
 		corners3 = np.zeros(shape=(corners2.shape[0], 3), dtype=np.float32)
@@ -49,10 +70,12 @@ if __name__ == '__main__':
 		z_theta = np.arctan2(R[1][0], R[0][0]) * 57.2958
 		print(x_theta, y_theta, z_theta)
 
-		#circle_center = np.zeros(shape=(3,), dtype=np.float32)
-		#circle_center[0] = (corners2[0][0] + corners2[10][0] + corners2[77][0] + corners2[87][0]) / 4.
-		#circle_center[1] = (corners2[0][1] + corners2[10][1] + corners2[77][1] + corners2[87][1]) / 4.
-
+		circle_center = np.zeros(shape=(3,), dtype=np.float32)
+		circle_center[0] = (corners2[0][0] + corners2[10][0] + corners2[77][0] + corners2[87][0]) / 4.
+		circle_center[1] = (corners2[0][1] + corners2[10][1] + corners2[77][1] + corners2[87][1]) / 4.
+		center_world1 = points2Worlds(circle_center, K, R, t)
+		center_world2 = np.zeros(shape=(3,), dtype=np.float32)
+		center_world2[:2] = center_world1
 		#center = np.zeros(shape=(2,), dtype=np.int)
 		#center[0] = round(corners2[77][0]) # 0, 10, 77, 87
 		#center[1] = round(corners2[77][1])
@@ -63,13 +86,14 @@ if __name__ == '__main__':
 
 		# distance between cords
 		center_world = np.zeros(shape=(3,), dtype=np.float32)
-		dist = np.linalg.norm(camera_cords - center_world)
+		dist = np.linalg.norm(camera_cords - center_world2)
 		print("distance: %f\n"%(camera_cords[2])) 
+		print("distance: %f\n"%dist) 
 
-		rz = z_theta * 3.14 / 180.0
-		out_x = np.cos(rz) * t[0] - np.sin(rz) * t[1]
-		out_y = np.sin(rz) * t[0] + np.cos(rz) * t[1]
-		print("distance1: %f\n", np.sqrt(out_x * out_x + out_y * out_y))
+		#rz = z_theta * 3.14 / 180.0
+		#out_x = np.cos(rz) * t[0] - np.sin(rz) * t[1]
+		#out_y = np.sin(rz) * t[0] + np.cos(rz) * t[1]
+		#print("distance1: %f\n", np.sqrt(out_x * out_x + out_y * out_y))
 		
 
 	cv2.imshow("image", image_rectify)
